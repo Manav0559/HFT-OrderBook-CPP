@@ -118,13 +118,13 @@ public:
                  std::cout << "Price: " << it->first << " | Qty: " << o.quantity << "\n";
              }
         }
-        std::cout << "---------------------------\n";
+        std::cout << "\n";
         std::cout << "BIDS (Buyers)\n";
         for (const auto& [price, orders] : bids) {
             for (const auto& o : orders) {
                 std::cout << "Price: " << price << " | Qty: " << o.quantity << "\n";
             }
         }
-        std::cout << "---------------------------\n";
+        std::cout << "\n";
     }
 };
