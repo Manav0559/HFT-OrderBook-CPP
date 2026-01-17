@@ -13,7 +13,7 @@ https://github.com/Manav0559/HFT-OrderBook-CPP/assets/https://github.com/user-at
 ## Performance Benchmarks
 Tested on MacBook Air (Apple Silicon):
 * **Average Latency:** 1.21 microseconds/order
-* **Throughput:** ~800000 orders/se
+* **Throughput:** ~800000 orders/sec
 
 ## Features
 * **Matching Engine:** Standard Price-Time priority (FIFO) matching logic.
