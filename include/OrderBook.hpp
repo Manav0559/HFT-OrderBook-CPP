@@ -9,14 +9,14 @@ class LimitOrderBook {
 private:
     // Using std::map for automatic sorting of orders.
     // Complexity: Insertion and Deletion are O(log n).
-    // Asks (Sellers): Sorted Ascending (Lowest price first)
+    // Asks (Lowest price first)
     std::map<Order::Price, std::vector<Order>> asks;
 
-    // Bids (Buyers): Sorted Descending (Highest price first)
+    // Bids (Highest price first)
     std::map<Order::Price, std::vector<Order>, std::greater<Order::Price>> bids;
 
 public:
-    // Core engine logic: Try to match first, store remaining liquidity.
+    // Logic: Try to match first, store remaining liquidity.
     void addOrder(Order order) {
         if (order.side == Side::Buy) {
             matchBuyOrder(order);
@@ -49,8 +49,6 @@ public:
                 
                 // Calculate trade size
                 auto fillQty = std::min(order.quantity, sellOrder.quantity);
-                
-                // In a real engine, we would emit a Trade Execution Report here
                 std::cout << "[EXECUTION] Sold " << fillQty << " BTC @ " << price << "\n";
 
                 order.quantity -= fillQty;
