@@ -44,12 +44,13 @@ public:
             if (price > order.price) break;
 
             // Match against liquidity at this price level
-            for (auto orderIt = askOrders.begin(); orderIt != askOrders.end(); ) {
+            for (auto orderIt = askOrders.begin();
+                 orderIt != askOrders.end() && order.quantity > 0; ) {
                 Order& sellOrder = *orderIt;
                 
                 // Calculate trade size
                 auto fillQty = std::min(order.quantity, sellOrder.quantity);
-                std::cout << "[EXECUTION] Sold " << fillQty << " BTC @ " << price << "\n";
+                std::cout << "[EXECUTION] Bought " << fillQty << " BTC @ " << price << "\n";
 
                 order.quantity -= fillQty;
                 sellOrder.quantity -= fillQty;
@@ -60,16 +61,18 @@ public:
                 } else {
                     ++orderIt;
                 }
-
-                if (order.quantity == 0) return; // Buy order fully filled
             }
-            
-            // Cleanup: Remove empty price levels to save memory
+
+            // Cleanup: Remove empty price levels to save memory. This must run
+            // even when the incoming order is fully filled, otherwise an empty
+            // level is left in the book.
             if (askOrders.empty()) {
                 it = asks.erase(it);
             } else {
                 ++it;
             }
+
+            if (order.quantity == 0) return; // Buy order fully filled
         }
     }
 
@@ -81,12 +84,13 @@ public:
 
             if (price < order.price) break; // Buyers are paying too little
 
-            for (auto orderIt = bidOrders.begin(); orderIt != bidOrders.end(); ) {
+            for (auto orderIt = bidOrders.begin();
+                 orderIt != bidOrders.end() && order.quantity > 0; ) {
                 Order& buyOrder = *orderIt;
                 
                 auto fillQty = std::min(order.quantity, buyOrder.quantity);
                 
-                std::cout << "[EXECUTION] Bought " << fillQty << " BTC @ " << price << "\n";
+                std::cout << "[EXECUTION] Sold " << fillQty << " BTC @ " << price << "\n";
 
                 order.quantity -= fillQty;
                 buyOrder.quantity -= fillQty;
@@ -96,8 +100,6 @@ public:
                 } else {
                     ++orderIt;
                 }
-
-                if (order.quantity == 0) return;
             }
 
             if (bidOrders.empty()) {
@@ -105,8 +107,16 @@ public:
             } else {
                 ++it;
             }
+
+            if (order.quantity == 0) return; // Sell order fully filled
         }
     }
+
+    // Read-only accessors (used by tests).
+    std::size_t askLevelCount() const { return asks.size(); }
+    std::size_t bidLevelCount() const { return bids.size(); }
+    bool hasAskLevel(Order::Price p) const { return asks.count(p) != 0; }
+    bool hasBidLevel(Order::Price p) const { return bids.count(p) != 0; }
 
     void printBook() const {
         std::cout << "\n--- ORDER BOOK SNAPSHOT ---\n";
