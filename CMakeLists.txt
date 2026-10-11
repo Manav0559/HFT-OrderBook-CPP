@@ -3,3 +3,7 @@ project(HFTOrderBook VERSION 1.0)
 set(CMAKE_CXX_STANDARD 20)
 include_directories(include)
 add_executable(hft_engine src/main.cpp)
+
+enable_testing()
+add_executable(orderbook_tests tests/test_orderbook.cpp)
+add_test(NAME orderbook_tests COMMAND orderbook_tests)

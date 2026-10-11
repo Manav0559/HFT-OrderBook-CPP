@@ -25,6 +25,7 @@ binary rebuilds and prints the book from it.
 ```bash
 cmake -B build && cmake --build build
 ./build/hft_engine   # replays market_data.csv (generate via fetch_data.py)
+ctest --test-dir build --output-on-failure   # level-cleanup regression tests
 ```
 
 ## What its successor does differently
@@ -34,3 +35,7 @@ locator for O(1) cancel/replace, empty-level cleanup under test, CI on a
 case-sensitive filesystem, and performance claims only from committed
 benchmarks. That migration — including the bugs this version taught me —
 is the point of keeping both public.
+
+## License
+
+MIT, see [LICENSE](LICENSE).
